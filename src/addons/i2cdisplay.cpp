@@ -12,7 +12,9 @@
 
 bool I2CDisplayAddon::available() {
 	BoardOptions boardOptions = Storage::getInstance().getBoardOptions();
-	return boardOptions.hasI2CDisplay && boardOptions.i2cSDAPin != -1 && boardOptions.i2cSCLPin != -1;
+	return boardOptions.hasI2CDisplay && 
+		boardOptions.i2cSDAPin != (uint8_t)-1 && 
+		boardOptions.i2cSCLPin != (uint8_t)-1;
 }
 
 void I2CDisplayAddon::setup() {
@@ -46,20 +48,38 @@ void I2CDisplayAddon::process() {
 		drawStatusBar(gamepad);
 		drawText(0, 3, "[Web Config Mode]");
 		drawText(0, 4, std::string("GP2040-CE : ") + std::string(GP2040VERSION));
-	} else if (getMillis() < 7500 && SPLASH_MODE != NOSPLASH) {
-		drawSplashScreen(SPLASH_MODE, 90);
+	} else if (getMillis() < 7500 && Storage::getInstance().GetSplashMode() != NOSPLASH) {
+		const uint8_t* splashChoice = splashImageMain;
+		switch (Storage::getInstance().GetSplashChoice()) {
+			case MAIN:
+				break;
+			case X:
+				splashChoice = splashImage01;
+				break;
+			case Y:
+				splashChoice = splashImage02;
+				break;
+			case Z:
+				splashChoice = splashImage03;
+				break;
+			case CUSTOM:
+				splashChoice = splashCustom;
+				break;
+			case LEGACY:
+				splashChoice = splashImageLegacy;
+				break;
+		}
+		drawSplashScreen(Storage::getInstance().GetSplashMode(), (uint8_t *)splashChoice, 90);
 	} else {
 		drawStatusBar(gamepad);
-		switch (BUTTON_LAYOUT)
+		switch (Storage::getInstance().GetButtonLayout())
 		{
 			case BUTTON_LAYOUT_STICK:
 				drawArcadeStick(8, 28, 8, 2);
 				break;
-
 			case BUTTON_LAYOUT_STICKLESS:
 				drawStickless(8, 20, 8, 2);
 				break;
-
 			case BUTTON_LAYOUT_BUTTONS_ANGLED:
 				drawWasdBox(8, 28, 7, 3);
 				break;
@@ -75,9 +95,18 @@ void I2CDisplayAddon::process() {
 			case BUTTON_LAYOUT_DANCEPADA:
 				drawDancepadA(39, 12, 15, 2);
 				break;
+			case BUTTON_LAYOUT_TWINSTICKA:
+				drawTwinStickA(8, 28, 8, 2);
+				break;
+			case BUTTON_LAYOUT_BLANKA:
+				drawBlankA(0, 0, 0, 0);
+				break;
+			case BUTTON_LAYOUT_VLXA:
+				drawVLXA(7, 28, 7, 2);
+				break;
 		}
 
-		switch (BUTTON_LAYOUT_RIGHT)
+		switch (Storage::getInstance().GetButtonLayoutRight())
 		{
 			case BUTTON_LAYOUT_ARCADE:
 				drawArcadeButtons(8, 28, 8, 2);
@@ -111,6 +140,15 @@ void I2CDisplayAddon::process() {
 				break;
 			case BUTTON_LAYOUT_DANCEPADB:
 				drawDancepadB(39, 12, 15, 2);
+				break;
+			case BUTTON_LAYOUT_TWINSTICKB:
+				drawTwinStickB(100, 28, 8, 2);
+				break;
+			case BUTTON_LAYOUT_BLANKB:
+				drawSticklessButtons(0, 0, 0, 0);
+				break;
+			case BUTTON_LAYOUT_VLXB:
+				drawVLXB(6, 28, 7, 2);
 				break;
 		}
 	}
@@ -203,6 +241,102 @@ void I2CDisplayAddon::drawArcadeStick(int startX, int startY, int buttonRadius, 
 	}
 }
 
+void I2CDisplayAddon::drawVLXA(int startX, int startY, int buttonRadius, int buttonPadding)
+{
+	const int buttonMargin = buttonPadding + (buttonRadius * 2);
+
+	// Stick
+	obdPreciseEllipse(&obd, startX + (buttonMargin / 2), startY + (buttonMargin / 2), buttonRadius * 1.25, buttonRadius * 1.25, 1, 0);
+	
+	if (pGamepad->pressedUp()) {
+		if (pGamepad->pressedLeft()) {
+			obdPreciseEllipse(&obd, startX + (buttonMargin / 5), startY + (buttonMargin / 5), buttonRadius, buttonRadius, 1, 1);
+		} else if (pGamepad->pressedRight()) {
+			obdPreciseEllipse(&obd, startX + (buttonMargin * 0.875), startY + (buttonMargin / 5), buttonRadius, buttonRadius, 1, 1);
+		} else {
+			obdPreciseEllipse(&obd, startX + (buttonMargin / 2), startY, buttonRadius, buttonRadius, 1, 1);
+		}
+	} else if (pGamepad->pressedDown()) {
+		if (pGamepad->pressedLeft()) {
+			obdPreciseEllipse(&obd, startX + (buttonMargin / 5), startY + (buttonMargin * 0.875), buttonRadius, buttonRadius, 1, 1);
+		} else if (pGamepad->pressedRight()) {
+			obdPreciseEllipse(&obd, startX + (buttonMargin * 0.875), startY + (buttonMargin * 0.875), buttonRadius, buttonRadius, 1, 1);
+		} else {
+			obdPreciseEllipse(&obd, startX + buttonMargin / 2, startY + buttonMargin, buttonRadius, buttonRadius, 1, 1);
+		}
+	} else if (pGamepad->pressedLeft()) {
+		obdPreciseEllipse(&obd, startX, startY + buttonMargin / 2, buttonRadius, buttonRadius, 1, 1);
+	} else if (pGamepad->pressedRight()) {
+		obdPreciseEllipse(&obd, startX + buttonMargin, startY + buttonMargin / 2, buttonRadius, buttonRadius, 1, 1);
+	} else {
+		obdPreciseEllipse(&obd, startX + buttonMargin / 2, startY + buttonMargin / 2, buttonRadius, buttonRadius, 1, 1);
+	}
+}
+
+void I2CDisplayAddon::drawTwinStickA(int startX, int startY, int buttonRadius, int buttonPadding)
+{
+	const int buttonMargin = buttonPadding + (buttonRadius * 2);
+
+	// Stick
+	obdPreciseEllipse(&obd, startX + (buttonMargin / 2), startY + (buttonMargin / 2), buttonRadius * 1.25, buttonRadius * 1.25, 1, 0);
+	
+	if (pGamepad->pressedUp()) {
+		if (pGamepad->pressedLeft()) {
+			obdPreciseEllipse(&obd, startX + (buttonMargin / 5), startY + (buttonMargin / 5), buttonRadius, buttonRadius, 1, 1);
+		} else if (pGamepad->pressedRight()) {
+			obdPreciseEllipse(&obd, startX + (buttonMargin * 0.875), startY + (buttonMargin / 5), buttonRadius, buttonRadius, 1, 1);
+		} else {
+			obdPreciseEllipse(&obd, startX + (buttonMargin / 2), startY, buttonRadius, buttonRadius, 1, 1);
+		}
+	} else if (pGamepad->pressedDown()) {
+		if (pGamepad->pressedLeft()) {
+			obdPreciseEllipse(&obd, startX + (buttonMargin / 5), startY + (buttonMargin * 0.875), buttonRadius, buttonRadius, 1, 1);
+		} else if (pGamepad->pressedRight()) {
+			obdPreciseEllipse(&obd, startX + (buttonMargin * 0.875), startY + (buttonMargin * 0.875), buttonRadius, buttonRadius, 1, 1);
+		} else {
+			obdPreciseEllipse(&obd, startX + buttonMargin / 2, startY + buttonMargin, buttonRadius, buttonRadius, 1, 1);
+		}
+	} else if (pGamepad->pressedLeft()) {
+		obdPreciseEllipse(&obd, startX, startY + buttonMargin / 2, buttonRadius, buttonRadius, 1, 1);
+	} else if (pGamepad->pressedRight()) {
+		obdPreciseEllipse(&obd, startX + buttonMargin, startY + buttonMargin / 2, buttonRadius, buttonRadius, 1, 1);
+	} else {
+		obdPreciseEllipse(&obd, startX + buttonMargin / 2, startY + buttonMargin / 2, buttonRadius, buttonRadius, 1, 1);
+	}
+}
+
+void I2CDisplayAddon::drawTwinStickB(int startX, int startY, int buttonRadius, int buttonPadding)
+{
+	const int buttonMargin = buttonPadding + (buttonRadius * 2);
+
+	// Stick
+	obdPreciseEllipse(&obd, startX + (buttonMargin / 2), startY + (buttonMargin / 2), buttonRadius * 1.25, buttonRadius * 1.25, 1, 0);
+	
+	if (pGamepad->pressedB4()) {
+		if (pGamepad->pressedB3()) {
+			obdPreciseEllipse(&obd, startX + (buttonMargin / 5), startY + (buttonMargin / 5), buttonRadius, buttonRadius, 1, 1);
+		} else if (pGamepad->pressedB2()) {
+			obdPreciseEllipse(&obd, startX + (buttonMargin * 0.875), startY + (buttonMargin / 5), buttonRadius, buttonRadius, 1, 1);
+		} else {
+			obdPreciseEllipse(&obd, startX + (buttonMargin / 2), startY, buttonRadius, buttonRadius, 1, 1);
+		}
+	} else if (pGamepad->pressedB1()) {
+		if (pGamepad->pressedB3()) {
+			obdPreciseEllipse(&obd, startX + (buttonMargin / 5), startY + (buttonMargin * 0.875), buttonRadius, buttonRadius, 1, 1);
+		} else if (pGamepad->pressedB2()) {
+			obdPreciseEllipse(&obd, startX + (buttonMargin * 0.875), startY + (buttonMargin * 0.875), buttonRadius, buttonRadius, 1, 1);
+		} else {
+			obdPreciseEllipse(&obd, startX + buttonMargin / 2, startY + buttonMargin, buttonRadius, buttonRadius, 1, 1);
+		}
+	} else if (pGamepad->pressedB3()) {
+		obdPreciseEllipse(&obd, startX, startY + buttonMargin / 2, buttonRadius, buttonRadius, 1, 1);
+	} else if (pGamepad->pressedB2()) {
+		obdPreciseEllipse(&obd, startX + buttonMargin, startY + buttonMargin / 2, buttonRadius, buttonRadius, 1, 1);
+	} else {
+		obdPreciseEllipse(&obd, startX + buttonMargin / 2, startY + buttonMargin / 2, buttonRadius, buttonRadius, 1, 1);
+	}
+}
+
 void I2CDisplayAddon::drawMAMEA(int startX, int startY, int buttonSize, int buttonPadding)
 {
 	const int buttonMargin = buttonPadding + buttonSize;
@@ -254,6 +388,24 @@ void I2CDisplayAddon::drawVewlix(int startX, int startY, int buttonRadius, int b
 	obdPreciseEllipse(&obd, startX + (buttonMargin * 3.75) - (buttonMargin / 3), startY + buttonMargin - (buttonMargin / 4), buttonRadius, buttonRadius, 1, pGamepad->pressedB2());
 	obdPreciseEllipse(&obd, startX + (buttonMargin * 4.75) - (buttonMargin / 3), startY + buttonMargin - (buttonMargin / 4), buttonRadius, buttonRadius, 1, pGamepad->pressedR2());
 	obdPreciseEllipse(&obd, startX + (buttonMargin * 5.75) - (buttonMargin / 3), startY + buttonMargin - (buttonMargin / 4), buttonRadius, buttonRadius, 1, pGamepad->pressedL2());
+}
+
+void I2CDisplayAddon::drawVLXB(int startX, int startY, int buttonRadius, int buttonPadding)
+{
+	const int buttonMargin = buttonPadding + (buttonRadius * 2);
+
+	// 9-button Hori VLX
+	obdPreciseEllipse(&obd, startX + (buttonMargin * 2.75), startY + (buttonMargin * 0.2), buttonRadius, buttonRadius, 1, pGamepad->pressedB3());
+	obdPreciseEllipse(&obd, startX + (buttonMargin * 3.75), startY - (buttonMargin / 4), buttonRadius, buttonRadius, 1, pGamepad->pressedB4());
+	obdPreciseEllipse(&obd, startX + (buttonMargin * 4.75), startY - (buttonMargin / 4), buttonRadius, buttonRadius, 1, pGamepad->pressedR1());
+	obdPreciseEllipse(&obd, startX + (buttonMargin * 5.75), startY - (buttonMargin / 4), buttonRadius, buttonRadius, 1, pGamepad->pressedL1());
+
+	obdPreciseEllipse(&obd, startX + (buttonMargin * 2.75) - (buttonMargin / 3), startY + buttonMargin + (buttonMargin * 0.2), buttonRadius, buttonRadius, 1, pGamepad->pressedB1());
+	obdPreciseEllipse(&obd, startX + (buttonMargin * 3.75) - (buttonMargin / 3), startY + buttonMargin - (buttonMargin / 4), buttonRadius, buttonRadius, 1, pGamepad->pressedB2());
+	obdPreciseEllipse(&obd, startX + (buttonMargin * 4.75) - (buttonMargin / 3), startY + buttonMargin - (buttonMargin / 4), buttonRadius, buttonRadius, 1, pGamepad->pressedR2());
+	obdPreciseEllipse(&obd, startX + (buttonMargin * 5.75) - (buttonMargin / 3), startY + buttonMargin - (buttonMargin / 4), buttonRadius, buttonRadius, 1, pGamepad->pressedL2());
+
+	obdPreciseEllipse(&obd, startX + (buttonMargin * 7.4) - (buttonMargin / 3.5), startY + buttonMargin - (buttonMargin / 1.5), buttonRadius *.8, buttonRadius * .8, 1, pGamepad->pressedS2());
 }
 
 void I2CDisplayAddon::drawVewlix7(int startX, int startY, int buttonRadius, int buttonPadding)
@@ -405,26 +557,28 @@ void I2CDisplayAddon::drawDancepadB(int startX, int startY, int buttonSize, int 
 	obdRectangle(&obd, startX + buttonMargin * 2, startY + buttonMargin * 2, startX + buttonSize + buttonMargin * 2, startY + buttonSize + buttonMargin * 2, 1, pGamepad->pressedB3()); // Down/Right
 }
 
-void I2CDisplayAddon::drawSplashScreen(int splashMode, int splashSpeed)
+void I2CDisplayAddon::drawBlankA(int startX, int startY, int buttonSize, int buttonPadding)
+{
+}
+
+void I2CDisplayAddon::drawBlankB(int startX, int startY, int buttonSize, int buttonPadding)
+{
+}
+
+void I2CDisplayAddon::drawSplashScreen(int splashMode, uint8_t * splashChoice, int splashSpeed)
 {
     int mils = getMillis();
     switch (splashMode)
 	{
 		case STATICSPLASH: // Default, display static or custom image
-            if ((sizeof(splashCustom) / sizeof(*splashCustom)) > 0) {
-                obdDrawSprite(&obd, (uint8_t *)splashCustom, 128, 64, 16, 0, 0, 1);
-            } else {
-			    obdDrawSprite(&obd, (uint8_t *)splashImage, 128, 64, 16, 0, 0, 1);
-            }
+			obdDrawSprite(&obd, splashChoice, 128, 64, 16, 0, 0, 1);
 			break;
 		case CLOSEIN: // Close-in. Animate the GP2040 logo
 			obdDrawSprite(&obd, (uint8_t *)bootLogoTop, 43, 39, 6, 43, std::min<int>((mils / splashSpeed) - 39, 0), 1);
 			obdDrawSprite(&obd, (uint8_t *)bootLogoBottom, 80, 21, 10, 24, std::max<int>(64 - (mils / (splashSpeed * 2)), 44), 1);
 			break;
         case CLOSEINCUSTOM: // Close-in on custom image or delayed close-in if custom image does not exist
-            if ((sizeof(splashCustom) / sizeof(*splashCustom)) > 0) {
-               obdDrawSprite(&obd, (uint8_t *)splashCustom, 128, 64, 16, 0, 0, 1);
-            }
+            obdDrawSprite(&obd, splashChoice, 128, 64, 16, 0, 0, 1);
             if (mils > 2500) {
                 int milss = mils - 2500;
                 obdRectangle(&obd, 0, 0, 127, 1 + (milss / splashSpeed), 0, 1);

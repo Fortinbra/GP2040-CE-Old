@@ -86,9 +86,15 @@ public:
 	void drawSticklessButtons(int startX, int startY, int buttonRadius, int buttonPadding);
 	void drawWasdButtons(int startX, int startY, int buttonRadius, int buttonPadding);
 	void drawArcadeButtons(int startX, int startY, int buttonRadius, int buttonPadding);
-	void drawSplashScreen(int splashMode, int splashSpeed);
+	void drawSplashScreen(int splashMode, uint8_t* splashChoice, int splashSpeed);
 	void drawDancepadA(int startX, int startY, int buttonSize, int buttonPadding);
 	void drawDancepadB(int startX, int startY, int buttonSize, int buttonPadding);
+	void drawTwinStickA(int startX, int startY, int buttonSize, int buttonPadding);
+	void drawTwinStickB(int startX, int startY, int buttonSize, int buttonPadding);
+	void drawBlankA(int startX, int startY, int buttonSize, int buttonPadding);
+	void drawBlankB(int startX, int startY, int buttonSize, int buttonPadding);
+	void drawVLXA(int startX, int startY, int buttonRadius, int buttonPadding);
+	void drawVLXB(int startX, int startY, int buttonRadius, int buttonPadding);
 	uint8_t ucBackBuffer[1024];
 	OBDISP obd;
 	std::string statusBar;

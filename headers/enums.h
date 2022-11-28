@@ -10,6 +10,9 @@ typedef enum
 	BUTTON_LAYOUT_KEYBOARD_ANGLED,
 	BUTTON_LAYOUT_KEYBOARDA,
 	BUTTON_LAYOUT_DANCEPADA,
+	BUTTON_LAYOUT_TWINSTICKA,
+	BUTTON_LAYOUT_BLANKA,
+	BUTTON_LAYOUT_VLXA,
 } ButtonLayout;
 
 typedef enum
@@ -25,6 +28,9 @@ typedef enum
 	BUTTON_LAYOUT_NOIR8,
 	BUTTON_LAYOUT_KEYBOARDB,
 	BUTTON_LAYOUT_DANCEPADB,
+	BUTTON_LAYOUT_TWINSTICKB,
+	BUTTON_LAYOUT_BLANKB,
+	BUTTON_LAYOUT_VLXB,
 } ButtonLayoutRight;
 
 typedef enum
@@ -34,6 +40,16 @@ typedef enum
     CLOSEINCUSTOM,
     NOSPLASH,
 } SplashMode;
+
+typedef enum
+{
+    MAIN,
+    X,
+    Y,
+    Z,
+	CUSTOM,
+	LEGACY
+} SplashChoice;
 
 typedef enum
 {

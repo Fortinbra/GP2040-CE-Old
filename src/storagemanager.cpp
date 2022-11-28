@@ -18,8 +18,8 @@
 #include "addons/i2cdisplay.h"
 #include "addons/neopicoleds.h"
 #include "addons/playerleds.h"
-
-#include "inputs/turbo.h"
+#include "addons/i2canalog1219.h"
+#include "addons/turbo.h"
 
 #include "helper.h"
 
@@ -65,6 +65,9 @@ void Storage::setDefaultBoardOptions()
 	boardOptions.pinSliderLS       = PIN_SLIDER_LS;
 	boardOptions.pinSliderRS       = PIN_SLIDER_RS;
 	boardOptions.buttonLayout      = BUTTON_LAYOUT;
+	boardOptions.buttonLayoutRight = BUTTON_LAYOUT_RIGHT;
+	boardOptions.splashMode        = SPLASH_MODE;
+	boardOptions.splashChoice      = SPLASH_CHOICE;
 	boardOptions.i2cSDAPin         = I2C_SDA_PIN;
 	boardOptions.i2cSCLPin         = I2C_SCL_PIN;
 	boardOptions.i2cBlock          = (I2C_BLOCK == i2c0) ? 0 : 1;
@@ -81,6 +84,11 @@ void Storage::setDefaultBoardOptions()
 	boardOptions.reverseActionDown       = REVERSE_DOWN_DEFAULT;
 	boardOptions.reverseActionLeft       = REVERSE_LEFT_DEFAULT;
 	boardOptions.reverseActionRight      = REVERSE_RIGHT_DEFAULT;
+	boardOptions.i2cAnalog1219SDAPin     = I2C_ANALOG1219_SDA_PIN;
+	boardOptions.i2cAnalog1219SCLPin     = I2C_ANALOG1219_SCL_PIN;
+	boardOptions.i2cAnalog1219Block      = (I2C_ANALOG1219_BLOCK == i2c0) ? 0 : 1;
+	boardOptions.i2cAnalog1219Speed      = I2C_ANALOG1219_SPEED;
+	boardOptions.i2cAnalog1219Address    = I2C_ANALOG1219_ADDRESS;
 	strncpy(boardOptions.boardVersion, GP2040VERSION, strlen(GP2040VERSION));
 	setBoardOptions(boardOptions);
 }
@@ -202,6 +210,26 @@ void Storage::ClearFeatureData()
 uint8_t * Storage::GetFeatureData()
 {
 	return featureData;
+}
+
+int Storage::GetButtonLayout()
+{
+	return boardOptions.buttonLayout;
+}
+
+int Storage::GetButtonLayoutRight()
+{
+	return boardOptions.buttonLayoutRight;
+}
+
+int Storage::GetSplashMode()
+{
+	return boardOptions.splashMode;
+}
+
+int Storage::GetSplashChoice()
+{
+	return boardOptions.splashChoice;
 }
 
 /* Animation stuffs */

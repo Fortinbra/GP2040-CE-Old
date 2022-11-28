@@ -13,7 +13,6 @@
 #include "enums.h"
 #include "helper.h"
 #include "gamepad.h"
-#include "gpaddon.h"
 
 #define GAMEPAD_STORAGE_INDEX      0 // 1024 bytes for gamepad options
 #define BOARD_STORAGE_INDEX     1024 //  512 bytes for hardware options
@@ -48,8 +47,11 @@ struct BoardOptions
 	uint8_t pinSliderLS;
 	uint8_t pinSliderRS;
 	ButtonLayout buttonLayout;
-	int i2cSDAPin;
-	int i2cSCLPin;
+	ButtonLayoutRight buttonLayoutRight;
+	SplashMode splashMode;
+	SplashChoice splashChoice;
+	uint8_t i2cSDAPin;
+	uint8_t i2cSCLPin;
 	int i2cBlock;
 	uint32_t i2cSpeed;
 	bool hasI2CDisplay;
@@ -64,6 +66,11 @@ struct BoardOptions
 	uint8_t reverseActionDown;
 	uint8_t reverseActionLeft;
 	uint8_t reverseActionRight;
+	uint8_t i2cAnalog1219SDAPin;
+	uint8_t i2cAnalog1219SCLPin;
+	int i2cAnalog1219Block;
+	uint32_t i2cAnalog1219Speed;
+	uint8_t i2cAnalog1219Address;
 	char boardVersion[32]; // 32-char limit to board name
 	uint32_t checksum;
 };
@@ -134,9 +141,12 @@ public:
 	uint8_t * GetFeatureData();
 
 	void ResetSettings(); 				// EEPROM Reset Feature
-	
-	std::vector<GPAddon*> Addons;		// Modular Features
-	std::vector<GPAddon*> Inputs;
+
+	int GetButtonLayout();
+	int GetButtonLayoutRight();
+
+	int GetSplashMode();
+	int GetSplashChoice();
 
 private:
 	Storage() : gamepad(0) {

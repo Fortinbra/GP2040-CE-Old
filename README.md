@@ -2,7 +2,7 @@
 
 GP2040-CE is a gamepad firmware for the Raspberry Pi Pico and other boards based on the RP2040 microcontroller, and provides high performance with a rich feature set across multiple platforms. GP2040-CE is compatible with PC, MiSTer, Android, Raspberry Pi, Nintendo Switch, PS3 and PS4 (legacy controller support).
 
-Full documentation can be found at <https://gp2040.info>.
+Full documentation can be found at <http://www.gp2040-ce.info>.
 
 ## Features
 
@@ -15,9 +15,9 @@ Full documentation can be found at <https://gp2040.info>.
 * PWM Player indicator LED support (XInput only)
 * Multiple profile support
 * Support for 128x64 monochrome I2C displays - SSD1306, SH1106, and SH1107 compatible
-* [Built-in, embedded web configuration](https://gp2040.info/#/web-configurator) - no download required!
+* [Built-in, embedded web configuration](http://www.gp2040-ce.info/#/web-configurator) - no download required!
 
-Visit the [GP2040-CE Usage](https://gp2040.info/#/usage) page for more details.
+Visit the [GP2040-CE Usage](http://www.gp2040-ce.info/#/usage) page for more details.
 
 ## Performance
 
@@ -47,7 +47,7 @@ The instructions will slightly vary based on your device. These instructions are
 
 > If the device has been previously used for something other than GP2040-CE, please flash this file first to clear the on-board storage: [flash_nuke.uf2](docs/downloads/flash_nuke.uf2). After flashing the nuke file, wait a minute for the clear program to run and the RPI-RP2 drive to reappear.
 
-1. Download the latest `GP2040.uf2` file from the [Releases](releases) section for your board (e.g. `GP2040-PiPico.uf2` for the Raspberry Pi Pico).
+1. Download the latest `GP2040.uf2` file from the [Releases](https://github.com/OpenStickFoundation/GP2040-CE/releases) section for your board (e.g. `GP2040-PiPico.uf2` for the Raspberry Pi Pico).
 1. Unplug your Pico.
 1. Hold the BOOTSEL button on the Pico and plug into your computer. A new removable drive named `RPI-RP2` should appear in your file explorer.
 1. Drag and drop the `GP2040.uf2` file into the removable drive. This will flash the board.
@@ -55,7 +55,7 @@ The instructions will slightly vary based on your device. These instructions are
 
 ## Support
 
-If you would like to discuss features, issues or anything else related to GP2040 please [create an issue](issues/new) or join the [OpenStick GP2040-CE Discord channel](https://discord.gg/KyQCHcjwJ2).
+If you would like to discuss features, issues or anything else related to GP2040 please [create an issue](issues/new) or join the [OpenStick GP2040-CE Discord channel](https://discord.gg/qVcrGVDj2h).
 
 ### Frequently Asked Questions
 
@@ -85,7 +85,7 @@ No! GP2040-CE dedicates a processing core to just reading and writing player inp
 
 #### Why do the buttons have weird labels like B3, A1, S2, etc.?
 
-GP2040-CE uses a generic system for handling button inputs that resembles a traditional PlayStation controller layout with a few extra buttons. This means 4 face buttons (B1-B4), 4 shoulder buttons (L1, L2, R1, R2), Select and Start (S1, S2), 2 stick buttons (L3, R3) and 2 auxiliary buttons for things like Home and Capture (A1, A2) on the Switch. The GP2040-CE documentation and web configurator have a dropdown to change the labels to more familiar controller layouts. You can refer to the button mapping table on the [GP2040 Usage](https://gp2040.info/#/usage?id=buttons) page.
+GP2040-CE uses a generic system for handling button inputs that resembles a traditional PlayStation controller layout with a few extra buttons. This means 4 face buttons (B1-B4), 4 shoulder buttons (L1, L2, R1, R2), Select and Start (S1, S2), 2 stick buttons (L3, R3) and 2 auxiliary buttons for things like Home and Capture (A1, A2) on the Switch. The GP2040-CE documentation and web configurator have a dropdown to change the labels to more familiar controller layouts. You can refer to the button mapping table on the [GP2040 Usage](http://www.gp2040-ce.info/#/usage?id=buttons) page.
 
 #### Why use PlatformIO instead of \<insert favorite project setup\>?
 
